@@ -116,7 +116,10 @@ const EndModal = ({
               >
                 <p className="font-bold text-sm">
                   {`${player.desktopName} ${
-                    result.winIds![0] === player.id ? ` (Winner)` : ``
+                    result.winIds![0] === player.id &&
+                    result.winIds!.length === 1
+                      ? ` (Winner)`
+                      : ``
                   }`}
                 </p>
                 <p className="text-xl font-bold">{player.score} Pairs</p>

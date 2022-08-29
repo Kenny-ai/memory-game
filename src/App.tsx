@@ -63,7 +63,7 @@ const App = () => {
     closeModal();
   };
 
-  const { seconds, minutes, isRunning, start, pause, reset } = useStopwatch({
+  const { seconds, minutes, start, pause, reset } = useStopwatch({
     autoStart: true,
   });
 

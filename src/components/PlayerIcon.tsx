@@ -1,5 +1,4 @@
 import React from "react";
-import { useStateContext } from "../contexts/ContextProvider";
 import { motion } from "framer-motion";
 import "../styles.css";
 
