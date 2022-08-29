@@ -1,3 +1,5 @@
+import { playersNumberTypes } from "../@types/stateTypes";
+
 const shuffle = (array: number[]) => {
   let m = array.length,
     t,
@@ -32,4 +34,20 @@ export const generateRandom = (n: number) => {
     output.push(...arr);
   }
   return shuffle(output);
+};
+
+export const handleTurn = (
+  currentTurn: number,
+  numOfPlayers: playersNumberTypes
+) => {
+  const turnArray = [...Array(numOfPlayers + 1).keys()].slice(1);
+  return currentTurn === numOfPlayers
+    ? 1
+    : turnArray[(turnArray.indexOf(currentTurn) + 1) % numOfPlayers];
+};
+
+export const getWinnersArray = (array: number[]) => {
+  let sorted = array.sort((a, b) => b - a);
+  let max = sorted.filter((i) => i === sorted[0]);
+  return max;
 };

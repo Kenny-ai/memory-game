@@ -1,45 +1,23 @@
-import { createContext, useContext, useState } from "react";
-import {
-  ContextInterface,
-  gridTypes,
-  playersNumberTypes,
-  themeTypes,
-} from "../@types/model";
+import { createContext, Dispatch, useContext, useReducer } from "react";
+import {} from "../@types/stateTypes";
+import { Actions, initialStateType } from "../@types/reducerTypes";
 
 interface Props {
   children: React.ReactNode;
+  reducer: (state: initialStateType, action: Actions) => initialStateType;
+  initialState: initialStateType;
 }
 
-const StateContext = createContext<ContextInterface | null>(null);
+const StateContext = createContext<
+  [initialStateType, Dispatch<Actions>] | null
+>(null);
 
-export const ContextProvider = ({ children }: Props) => {
-  const [gridSize, setGridSize] = useState<gridTypes>(4);
-  const [showGame, setShowGame] = useState(false);
-  const [theme, setTheme] = useState<themeTypes>("numbers");
-  const [playersNumber, setPlayersNumber] = useState<playersNumberTypes>(1);
-  const [moves, setMoves] = useState(0);
-  const turnArray = [...Array(playersNumber+1).keys()].slice(1);
-  const [turn, setTurn] = useState(turnArray[0]);
-
-  const values = {
-    gridSize,
-    setGridSize,
-    showGame,
-    setShowGame,
-    theme,
-    setTheme,
-    playersNumber,
-    setPlayersNumber,
-    moves,
-    setMoves,
-    turn,
-    setTurn,
-    turnArray
-  };
+export const ContextProvider = ({ reducer, initialState, children }: Props) => {
+  const values = useReducer(reducer, initialState);
   return (
     <StateContext.Provider value={values}>{children}</StateContext.Provider>
   );
 };
 
 export const useStateContext = () =>
-  useContext(StateContext) as ContextInterface;
+  useContext(StateContext) as [initialStateType, Dispatch<Actions>];

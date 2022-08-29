@@ -1,28 +1,61 @@
 import React from "react";
-import { gridTypes, playersNumberTypes, themeTypes } from "../@types/model";
+import { Link } from "react-router-dom";
+import {
+  gridTypes,
+  playersNumberTypes,
+  themeTypes,
+} from "../@types/stateTypes";
 import { useStateContext } from "../contexts/ContextProvider";
 
-const StartBoard = () => {
-  const {
-    setShowGame,
-    gridSize,
-    setGridSize,
-    theme,
-    setTheme,
-    playersNumber,
-    setPlayersNumber,
-  } = useStateContext();
-  const handleShowGame = () => {
-    setShowGame(true);
-  };
+interface Props {
+  gridSize: gridTypes;
+  setGridSize: React.Dispatch<React.SetStateAction<gridTypes>>;
+  theme: themeTypes;
+  setTheme: React.Dispatch<React.SetStateAction<themeTypes>>;
+  playersNumber: playersNumberTypes;
+  setPlayersNumber: React.Dispatch<React.SetStateAction<playersNumberTypes>>;
+}
+
+const StartBoard = ({
+  gridSize,
+  setGridSize,
+  theme,
+  setTheme,
+  playersNumber,
+  setPlayersNumber,
+}: Props) => {
+  const [, dispatch] = useStateContext();
+
   const handleGridSize = (value: gridTypes) => {
     setGridSize(value);
   };
   const handleTheme = (value: themeTypes) => {
     setTheme(value);
   };
+
+  const handleOnePlayer = () => {
+    setPlayersNumber(1);
+  };
+
   const handlePlayerNumber = (value: playersNumberTypes) => {
     setPlayersNumber(value);
+    dispatch({
+      type: "EMPTY_PLAYERS_ARRAY",
+    });
+    for (let i = 1; i <= value; i++) {
+      dispatch({
+        type: "CREATE_PLAYERS",
+        payload: [
+          {
+            id: i,
+            mobileName: `P${i}`,
+            desktopName: `Player ${i}`,
+            score: 0,
+            turn: i,
+          },
+        ],
+      });
+    }
   };
   return (
     <div className="bg-white-text p-6 h-fit min-w-[20rem] md:p-10 md:w-[40rem] rounded-lg">
@@ -61,7 +94,7 @@ const StartBoard = () => {
           </h5>
           <div className="flex justify-between">
             <button
-              onClick={() => handlePlayerNumber(1)}
+              onClick={handleOnePlayer}
               className={`${
                 playersNumber === 1
                   ? `bg-dark-blue`
@@ -131,12 +164,11 @@ const StartBoard = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleShowGame}
-          className="bg-orange w-full py-2 font-bold rounded-2xl md:py-3 hover:bg-orange-hover"
-        >
-          start game
-        </button>
+        <Link to="/game">
+          <button className="bg-orange w-full py-2 font-bold rounded-2xl md:py-3 hover:bg-orange-hover">
+            start game
+          </button>
+        </Link>
       </div>
     </div>
   );

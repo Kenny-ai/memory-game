@@ -1,74 +1,146 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { gridTypes, playersNumberTypes, TimeTaken } from "../@types/stateTypes";
 import { useStateContext } from "../contexts/ContextProvider";
 import "../styles.css";
-import { generateRandom } from "../utils/utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { generateRandom, handleTurn } from "../utils/utils";
 
-export default function Board() {
-  const { gridSize, setMoves, turn, setTurn, playersNumber, turnArray } =
-    useStateContext();
+interface Props {
+  gridSize: gridTypes;
+  setShowEndModal: React.Dispatch<React.SetStateAction<boolean>>;
+  playersNumber: playersNumberTypes;
+  setMoves: React.Dispatch<React.SetStateAction<number>>;
+  turn: number;
+  setTurn: React.Dispatch<React.SetStateAction<number>>;
+  matched: number;
+  setMatched: React.Dispatch<React.SetStateAction<number>>;
+  restart: boolean;
+  pause: () => void;
+  setTimeTaken: React.Dispatch<React.SetStateAction<TimeTaken>>;
+  minutes: number;
+  seconds: number;
+}
 
-  const [array, setArray] = useState(generateRandom(gridSize === 4 ? 8 : 18));
+const Board = ({
+  gridSize,
+  setShowEndModal,
+  playersNumber,
+  setMoves,
+  turn,
+  setTurn,
+  matched,
+  setMatched,
+  restart,
+  pause,
+  setTimeTaken,
+  minutes,
+  seconds,
+}: Props) => {
+  const [state, dispatch] = useStateContext();
 
-  const arrayIds = [...Array(array.length).keys()].map((i) => i.toString());
+  // function to update player score
+  const updatePlayerScore = (id: number) => {
+    playersNumber > 1 &&
+      dispatch({
+        type: "UPDATE_PLAYER_SCORE",
+        payload: { id: id },
+      });
+  };
 
-  const [score, setScore] = useState(0);
+  // generate array of random numbers for game
+  const memoryArray = useMemo(
+    () => generateRandom(gridSize === 4 ? 8 : 18),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gridSize, restart]
+  );
+
+  // store ids of each number in memoryArray
+  const arrayIds = [...Array(memoryArray.length).keys()].map((i) =>
+    i.toString()
+  );
+
+  // show endModal when matched all boxes have been matched
+  useEffect(() => {
+    if (matched === memoryArray.length / 2) {
+      setShowEndModal(true);
+      pause();
+      setTimeTaken({ minutes, seconds });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matched]);
 
   // array to store ids of clicked boxes
-  const [arr, setArr] = useState<string[]>([]);
+  const [boxesPicked, setBoxesPicked] = useState<number[]>([]);
 
-  const handleClick = (id: string) => {
+  const handleBoxClick = (_id: string) => {
+    let id = parseInt(_id); // convert id to number
+
     // prevent user click on the same box twice and prevent a third box click
-    if (arr[arr.length - 1] !== id && arr.length < 2) {
-      // add picked ids to the array and open the boxes
-      arr.push(id);
-      document.getElementById(id)!.style.background = "#fda214";
-      document.getElementById(id)!.style.color = "white";
+    if (boxesPicked.slice(-1)[0] !== id && boxesPicked.length < 2) {
+      // store clicked boxes in boxesPicked and open them
+      boxesPicked.push(id);
+      document.getElementById(_id)!.style.background = "#fda214";
+      document.getElementById(_id)!.style.color = "white";
 
-      if (arr.length > 1) {
-        playersNumber === 1 && setMoves((moves) => moves + 1);
-        setTimeout(() => {
-          setTurn(turnArray[(turnArray.indexOf(turn) + 1) % playersNumber]);
-        }, 500);
-        if (array[parseInt(arr[0])] === array[parseInt(id)] && arr.length > 1) {
-          setScore((score) => score + 1);
+      if (boxesPicked.length > 1) {
+        // update moves and turns based on number of players
+        playersNumber === 1
+          ? setMoves((moves) => moves + 1)
+          : setTimeout(() => {
+              setTurn((turn) => handleTurn(turn, playersNumber));
+            }, 500);
+
+        // if boxes picked match
+        if (memoryArray[boxesPicked[0]] === memoryArray[id]) {
+          // update player's score and change bg of matched boxes
+          updatePlayerScore(turn);
           setTimeout(() => {
-            arr.forEach((i) => {
-              document.getElementById(i)!.style.backgroundColor = "#bcced9";
+            boxesPicked.forEach((matchedBox) => {
+              document.getElementById(
+                matchedBox.toString()
+              )!.style.backgroundColor = "#bcced9";
             });
-            arr.length = 0;
+            boxesPicked.length = 0; // empty array of boxes picked
           }, 500);
+
+          // increment number of matched boxes
+          setMatched((matched) => matched + 1);
+
+          // if boxes picked don't match
         } else {
+          // close boxes
           setTimeout(() => {
-            arr.forEach((i) => {
-              document.getElementById(i)!.style.color = "transparent";
-              document.getElementById(i)!.style.background = "#304859";
+            boxesPicked.forEach((box) => {
+              document.getElementById(box.toString())!.style.color =
+                "transparent";
+              document.getElementById(box.toString())!.style.background =
+                "#304859";
             });
-            arr.length = 0;
+            // empty boxes picked array
+            boxesPicked.length = 0;
           }, 500);
         }
       }
     }
   };
 
-  const [size, setSize] = useState(0);
+  const [screenSize, setScreenSize] = useState(0);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      setScreenSize(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+  }, []);
 
   const boxSizes = {
     four: { small: 4.5, large: 7, container: 4.5 * 4 + 5 },
     six: { small: 3, large: 5, container: 3 * 4 + 5 },
   };
 
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      setSize(window.innerWidth);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    // console.log(size);
-  }, []);
-
   const boxWidth =
-    size < 768
+    screenSize < 768
       ? gridSize === 4
         ? boxSizes.four.small
         : boxSizes.six.small
@@ -77,9 +149,7 @@ export default function Board() {
       : boxSizes.six.large;
 
   return (
-    <div className="">
-      {/* <h1 className="text-xl font-bold uppercase">Score: {score}</h1> */}
-      <p className="text-xl text-red-400">{turn}</p>
+    <>
       <div
         className="box-container"
         style={{
@@ -91,14 +161,16 @@ export default function Board() {
             key={i}
             style={{ width: `${boxWidth}rem`, height: `${boxWidth}rem` }}
             className="box"
-            onClick={() => handleClick(i)}
+            onClick={() => handleBoxClick(i)}
           >
             <div id={i} className="inner">
-              {array[parseInt(i)]}
+              {memoryArray[parseInt(i)]}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
-}
+};
+
+export default Board;

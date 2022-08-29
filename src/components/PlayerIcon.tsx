@@ -4,36 +4,37 @@ import { motion } from "framer-motion";
 import "../styles.css";
 
 interface Props {
-  num: number;
+  id: number;
+  mobileName: string;
+  desktopName: string;
+  turn: number;
+  score: number;
 }
 
-const PlayerIcon = ({ num }: Props) => {
-  const { turn } = useStateContext();
+const PlayerIcon = ({ id, mobileName, desktopName, turn, score }: Props) => {
   return (
     <motion.div
       className={`${
-        turn === num ? `bg-orange text-white-text` : `bg-button-inactive`
+        turn === id ? `bg-orange text-white-text` : `bg-button-inactive`
       } flex flex-col justify-center items-start w-16 p-3 rounded-lg h-fit md:w-32 player-icon`}
     >
       <h5
-        className={`md:hidden ${
-          turn !== num ? `text-gray-text` : ``
-        } font-bold`}
+        className={`md:hidden ${turn !== id ? `text-gray-text` : ``} font-bold`}
       >
-        P{num}
+        {mobileName}
       </h5>
 
       <h5
         className={`hidden md:block ${
-          turn !== num ? `text-gray-text` : ``
+          turn !== id ? `text-gray-text` : ``
         } font-bold`}
       >
-        Player {num}
+        {desktopName}
       </h5>
       <p
-        className={`${turn !== num ? `text-[#31495a]` : ``} font-bold text-2xl`}
+        className={`${turn !== id ? `text-[#31495a]` : ``} font-bold text-2xl`}
       >
-        0
+        {score}
       </p>
     </motion.div>
   );
