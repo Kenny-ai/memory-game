@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Board from "./components/Board";
 import StartGame from "./screens/StartGame";
 import "./App.css";
@@ -6,12 +6,16 @@ import Game from "./screens/Game";
 import MenuModal from "./components/MenuModal";
 import EndModal from "./components/EndModal";
 import StartBoard from "./components/StartBoard";
-import { gridTypes, playersNumberTypes, themeTypes, TimeTaken } from "./@types/stateTypes";
+import {
+  gridTypes,
+  playersNumberTypes,
+  themeTypes,
+  TimeTaken,
+} from "./@types/stateTypes";
 import { useStateContext } from "./contexts/ContextProvider";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import TimerBox from "./components/TimerBox";
 import { useStopwatch } from "react-timer-hook";
-// import Timer from "./components/Timer";
 
 const App = () => {
   const [, dispatch] = useStateContext();
@@ -29,8 +33,15 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [showEndModal, setShowEndModal] = useState(false);
 
-  const navigate = useNavigate();
-
+  useLayoutEffect(() => {
+    let storedNumber = localStorage.getItem("numOfPlayers")!;
+    setPlayersNumber(JSON.parse(storedNumber));
+    let storedGridSize = localStorage.getItem("gridSize")!;
+    setGridSize(JSON.parse(storedGridSize));
+    // let storedTheme = localStorage.getItem("theme")!;
+    // setTheme(JSON.parse(storedTheme));
+  }, []);
+  
   const closeModal = () => {
     showModal && setShowModal(false);
     showEndModal && setShowEndModal(false);
@@ -55,7 +66,6 @@ const App = () => {
   };
 
   const handleNewGame = () => {
-    navigate("/");
     setTurn(1);
     setMatched(0);
     setMoves(0);
@@ -76,10 +86,12 @@ const App = () => {
     );
   };
 
-  const [timeTaken, setTimeTaken] = useState<TimeTaken>({ minutes: 0, seconds: 0 });
+  const [timeTaken, setTimeTaken] = useState<TimeTaken>({
+    minutes: 0,
+    seconds: 0,
+  });
 
   return (
-    // <TimerBox />
     <div className="app text-white-text relative">
       <Routes>
         <Route
@@ -94,6 +106,7 @@ const App = () => {
                   setTheme={setTheme}
                   playersNumber={playersNumber}
                   setPlayersNumber={setPlayersNumber}
+                  handleNewGame={handleNewGame}
                 />
               }
             />
@@ -105,6 +118,7 @@ const App = () => {
             <Game
               board={
                 <Board
+                  theme={theme}
                   restart={restart}
                   matched={matched}
                   setMatched={setMatched}
@@ -123,6 +137,9 @@ const App = () => {
               moves={moves}
               turn={turn}
               playersNumber={playersNumber}
+              setPlayersNumber={setPlayersNumber}
+              setTheme={setTheme}
+              setGridSize={setGridSize}
               handleRestart={handleRestart}
               handleNewGame={handleNewGame}
               timerBox={

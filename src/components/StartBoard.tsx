@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   gridTypes,
@@ -14,6 +14,7 @@ interface Props {
   setTheme: React.Dispatch<React.SetStateAction<themeTypes>>;
   playersNumber: playersNumberTypes;
   setPlayersNumber: React.Dispatch<React.SetStateAction<playersNumberTypes>>;
+  handleNewGame: () => void;
 }
 
 const StartBoard = ({
@@ -23,18 +24,26 @@ const StartBoard = ({
   setTheme,
   playersNumber,
   setPlayersNumber,
+  handleNewGame,
 }: Props) => {
   const [, dispatch] = useStateContext();
 
+  useEffect(() => {
+    handleNewGame();
+  }, []);
+
   const handleGridSize = (value: gridTypes) => {
     setGridSize(value);
+    localStorage.setItem("gridSize", JSON.stringify(value));
   };
   const handleTheme = (value: themeTypes) => {
     setTheme(value);
+    localStorage.setItem("theme", JSON.stringify(value));
   };
 
   const handleOnePlayer = () => {
     setPlayersNumber(1);
+    localStorage.setItem("numOfPlayers", JSON.stringify(1));
   };
 
   const handlePlayerNumber = (value: playersNumberTypes) => {
@@ -56,6 +65,7 @@ const StartBoard = ({
         ],
       });
     }
+    localStorage.setItem("numOfPlayers", JSON.stringify(value));
   };
   return (
     <div className="bg-white-text p-6 h-fit min-w-[20rem] md:p-10 md:w-[40rem] rounded-lg">

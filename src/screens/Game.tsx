@@ -1,10 +1,17 @@
-import { playersNumberTypes } from "../@types/stateTypes";
+import { useLayoutEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  gridTypes,
+  playersNumberTypes,
+  themeTypes,
+} from "../@types/stateTypes";
 import PlayerIcon from "../components/PlayerIcon";
 import { useStateContext } from "../contexts/ContextProvider";
 
 interface Props {
   board: React.ReactNode;
   playersNumber: playersNumberTypes;
+  setPlayersNumber: React.Dispatch<React.SetStateAction<playersNumberTypes>>;
   moves: number;
   turn: number;
   handleRestart: () => void;
@@ -12,11 +19,16 @@ interface Props {
   timerBox: React.ReactNode;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   pause: () => void;
+  setTheme: React.Dispatch<React.SetStateAction<themeTypes>>;
+  setGridSize: React.Dispatch<React.SetStateAction<gridTypes>>;
 }
 
 const Game = ({
+  setTheme,
+  setGridSize,
   board,
   playersNumber,
+  setPlayersNumber,
   moves,
   turn,
   handleRestart,
@@ -25,12 +37,19 @@ const Game = ({
   setShowModal,
   pause,
 }: Props) => {
-  const [state] = useStateContext();
-
   const handleShowMenuModal = () => {
     setShowModal(true);
     pause();
   };
+
+  const navigate = useNavigate();
+
+  const [state, dispatch] = useStateContext();
+  useLayoutEffect(() => {
+    dispatch({
+      type: "CLEAR_PLAYER_SCORES",
+    });
+  }, []);
 
   return (
     <div className="p-6 h-screen flex flex-col">
@@ -51,7 +70,10 @@ const Game = ({
             Restart
           </button>
           <button
-            onClick={handleNewGame}
+            onClick={() => {
+              navigate("/");
+              handleNewGame();
+            }}
             className="bg-gray-button py-2 px-6 text-xl font-bold rounded-3xl cursor-pointer hover:bg-gray-hover hover:text-white-text text-[#31495a] hidden md:block"
           >
             New Game
@@ -64,7 +86,8 @@ const Game = ({
 
       {playersNumber > 1 ? (
         <div className="flex-[0.15] flex justify-between items-end md:w-[35rem] md:m-auto">
-          {state.playerDetails.map((player) => (
+          {/* {persistedState && <p>{persistedState.playerDetails}</p>} */}
+          {state.playerDetails!.map((player) => (
             <PlayerIcon
               key={player.id}
               id={player.id}

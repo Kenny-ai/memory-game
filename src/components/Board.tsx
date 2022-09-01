@@ -1,11 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { gridTypes, playersNumberTypes, TimeTaken } from "../@types/stateTypes";
+import {
+  gridTypes,
+  playersNumberTypes,
+  themeTypes,
+  TimeTaken,
+} from "../@types/stateTypes";
 import { useStateContext } from "../contexts/ContextProvider";
 import "../styles.css";
 import { generateRandom, handleTurn } from "../utils/utils";
 
 interface Props {
+  theme: themeTypes;
   gridSize: gridTypes;
   setShowEndModal: React.Dispatch<React.SetStateAction<boolean>>;
   playersNumber: playersNumberTypes;
@@ -22,6 +30,7 @@ interface Props {
 }
 
 const Board = ({
+  theme,
   gridSize,
   setShowEndModal,
   playersNumber,
@@ -36,7 +45,7 @@ const Board = ({
   minutes,
   seconds,
 }: Props) => {
-  const [state, dispatch] = useStateContext();
+  const [, dispatch] = useStateContext();
 
   // function to update player score
   const updatePlayerScore = (id: number) => {
@@ -47,12 +56,17 @@ const Board = ({
       });
   };
 
-  // generate array of random numbers for game
-  const memoryArray = useMemo(
-    () => generateRandom(gridSize === 4 ? 8 : 18),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [gridSize, restart]
-  );
+  // generate array of random numbers or icons based on theme
+  const memoryArray =
+    theme === "numbers"
+      ? useMemo(
+          () => generateRandom(gridSize === 4 ? 8 : 18, "numbers"),
+          [gridSize, restart]
+        )
+      : useMemo(
+          () => generateRandom(gridSize === 4 ? 8 : 18, "icons"),
+          [gridSize, restart]
+        );
 
   // store ids of each number in memoryArray
   const arrayIds = [...Array(memoryArray.length).keys()].map((i) =>
@@ -164,7 +178,11 @@ const Board = ({
             onClick={() => handleBoxClick(i)}
           >
             <div id={i} className="inner">
-              {memoryArray[parseInt(i)]}
+              {theme === "numbers" ? (
+                <>{memoryArray[parseInt(i)]}</>
+              ) : (
+                <FontAwesomeIcon icon={memoryArray[parseInt(i)]} />
+              )}
             </div>
           </div>
         ))}

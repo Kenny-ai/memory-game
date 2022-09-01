@@ -21,20 +21,20 @@ const EndModal = ({
   timeTaken,
 }: Props) => {
   const [state] = useStateContext();
-  const scoreArray = state.playerDetails.map((player) => player.score);
+  const scoreArray = state.playerDetails!.map((player) => player.score);
 
   const winnersArray = getWinnersArray(scoreArray);
 
   const getResult = () => {
     let message = "";
-    const winIds = state.playerDetails
+    const winIds = state.playerDetails!
       .filter((player) => player.score === winnersArray[0])
       .map((i) => i.id);
     if (winnersArray.length > 1) {
       message = "It's a tie!";
     } else {
       message = `Player ${
-        state.playerDetails.filter((player) => player.id === winIds[0])[0].id
+        state.playerDetails!.filter((player) => player.id === winIds[0])[0].id
       } wins!`;
     }
     return { winIds, message };
@@ -105,11 +105,11 @@ const EndModal = ({
 
           {/* winner will have bg color #304859 and white text */}
           <div className="flex flex-col gap-2 md:w-1/2 md:m-auto">
-            {state.playerDetails.map((player) => (
+            {state.playerDetails!.map((player) => (
               <div
                 key={player.id}
                 className={`${
-                  result.winIds![0] === player.id
+                  result.winIds!.includes(player.id)
                     ? `bg-dark-blue text-white-text`
                     : `text-gray-text bg-button-inactive`
                 } flex justify-between items-center  rounded-lg p-2`}

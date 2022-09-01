@@ -6,7 +6,7 @@ export interface PlayerDetailsType {
   turn: number;
 }
 export interface initialStateType {
-  playerDetails: PlayerDetailsType[];
+  playerDetails?: PlayerDetailsType[];
 }
 
 export interface Actions {

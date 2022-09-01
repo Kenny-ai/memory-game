@@ -1,6 +1,51 @@
-import { playersNumberTypes } from "../@types/stateTypes";
+import { playersNumberTypes, themeTypes } from "../@types/stateTypes";
+import {
+  faAnchor,
+  faAnkh,
+  faBiohazard,
+  faBinoculars,
+  faGolfBall,
+  faBowlingBall,
+  faBaseballBall,
+  faFootballBall,
+  faBasketballBall,
+  faVolleyballBall,
+  faBell,
+  faBrain,
+  faBurn,
+  faCat,
+  faCircle,
+  faCog,
+  faCogs,
+  faDog,
+  faDragon,
+  faEgg,
+} from "@fortawesome/free-solid-svg-icons";
 
-const shuffle = (array: number[]) => {
+const iconArray = [
+  faAnchor,
+  faAnkh,
+  faBiohazard,
+  faBinoculars,
+  faGolfBall,
+  faBowlingBall,
+  faBaseballBall,
+  faFootballBall,
+  faBasketballBall,
+  faVolleyballBall,
+  faBell,
+  faBrain,
+  faBurn,
+  faCat,
+  faCircle,
+  faCog,
+  faCogs,
+  faDog,
+  faDragon,
+  faEgg,
+];
+
+const shuffle = (array: any[]) => {
   let m = array.length,
     t,
     i;
@@ -19,15 +64,24 @@ const shuffle = (array: number[]) => {
   return array;
 };
 
-export const generateRandom = (n: number) => {
-  let output: number[] = [];
+export const generateRandom = (n: number, theme: themeTypes) => {
+  let output = [];
   for (let i = 0; i < 2; i++) {
-    let m = n;
-    let array = [...Array(m + 1).keys()].slice(1);
-    let arr: number[] = [];
+    let m = n,
+      array = [...Array(m + 1).keys()].slice(1),
+      arr = [],
+      randomNum: any,
+      removed: any,
+      randomIcon,
+      icons = iconArray.slice(0, n);
     while (m > 0) {
-      let randomNum = Math.floor(Math.random() * m);
-      const removed: number = array.splice(array.indexOf(randomNum), 1).pop()!;
+      if (theme === "numbers") {
+        randomNum = Math.floor(Math.random() * m);
+        removed = array.splice(array.indexOf(randomNum), 1).pop()!;
+      } else {
+        randomIcon = icons[Math.floor(Math.random() * m)];
+        removed = icons.splice(icons.indexOf(randomIcon), 1).pop()!;
+      }
       arr.push(removed);
       m--;
     }
