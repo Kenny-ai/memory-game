@@ -82,7 +82,10 @@ const EndModal = ({
               Restart
             </button>
             <button
-              onClick={handleNewGame}
+              onClick={() => {
+                navigate("/");
+                handleNewGame();
+              }}
               className="bg-button-inactive text-black-text font-bold w-full py-2 rounded-full text-lg hover:bg-gray-hover hover:text-white-text"
             >
               Setup New Game
@@ -137,10 +140,10 @@ const EndModal = ({
               Restart
             </button>
             <button
-                onClick={() => {
-                  navigate("/")
-                  handleNewGame()
-                }}
+              onClick={() => {
+                navigate("/");
+                handleNewGame();
+              }}
               className="bg-button-inactive text-black-text font-bold w-full py-2 rounded-full text-lg hover:bg-gray-hover hover:text-white-text"
             >
               Setup New Game
