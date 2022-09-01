@@ -8,7 +8,12 @@ interface Props {
   start: () => void;
 }
 
-const MenuModal = ({ setShowModal, handleRestart, handleNewGame, start }: Props) => {
+const MenuModal = ({
+  setShowModal,
+  handleRestart,
+  handleNewGame,
+  start,
+}: Props) => {
   const handleCloseModal = () => {
     setShowModal(false);
     start();

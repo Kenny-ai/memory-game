@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { playersNumberTypes, TimeTaken } from "../@types/stateTypes";
 import { useStateContext } from "../contexts/ContextProvider";
 import { getWinnersArray } from "../utils/utils";
@@ -25,10 +26,12 @@ const EndModal = ({
 
   const winnersArray = getWinnersArray(scoreArray);
 
+  const navigate = useNavigate();
+
   const getResult = () => {
     let message = "";
-    const winIds = state.playerDetails!
-      .filter((player) => player.score === winnersArray[0])
+    const winIds = state
+      .playerDetails!.filter((player) => player.score === winnersArray[0])
       .map((i) => i.id);
     if (winnersArray.length > 1) {
       message = "It's a tie!";
@@ -103,7 +106,6 @@ const EndModal = ({
             </p>
           </div>
 
-          {/* winner will have bg color #304859 and white text */}
           <div className="flex flex-col gap-2 md:w-1/2 md:m-auto">
             {state.playerDetails!.map((player) => (
               <div
@@ -135,7 +137,10 @@ const EndModal = ({
               Restart
             </button>
             <button
-              onClick={handleNewGame}
+                onClick={() => {
+                  navigate("/")
+                  handleNewGame()
+                }}
               className="bg-button-inactive text-black-text font-bold w-full py-2 rounded-full text-lg hover:bg-gray-hover hover:text-white-text"
             >
               Setup New Game

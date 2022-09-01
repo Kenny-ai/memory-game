@@ -149,8 +149,8 @@ const Board = ({
   }, []);
 
   const boxSizes = {
-    four: { small: 4.5, large: 7, container: 4.5 * 4 + 5 },
-    six: { small: 3, large: 5, container: 3 * 4 + 5 },
+    four: { small: 4.3, large: 7, container: 4.5 * 4 + 5 },
+    six: { small: 2.7, large: 5, container: 3 * 4 + 5 },
   };
 
   const boxWidth =
@@ -161,6 +161,15 @@ const Board = ({
       : gridSize === 4
       ? boxSizes.four.large
       : boxSizes.six.large;
+
+  const font =
+    screenSize < 768
+      ? gridSize === 4
+        ? "2.5rem"
+        : "1.75rem"
+      : gridSize === 4
+      ? "3.75rem"
+      : "3rem";
 
   return (
     <>
@@ -177,7 +186,7 @@ const Board = ({
             className="box"
             onClick={() => handleBoxClick(i)}
           >
-            <div id={i} className="inner">
+            <div id={i} className="inner" style={{ fontSize: font }}>
               {theme === "numbers" ? (
                 <>{memoryArray[parseInt(i)]}</>
               ) : (

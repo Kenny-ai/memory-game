@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import Board from "./components/Board";
 import StartGame from "./screens/StartGame";
 import "./App.css";
@@ -13,7 +13,7 @@ import {
   TimeTaken,
 } from "./@types/stateTypes";
 import { useStateContext } from "./contexts/ContextProvider";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import TimerBox from "./components/TimerBox";
 import { useStopwatch } from "react-timer-hook";
 
@@ -41,7 +41,7 @@ const App = () => {
     // let storedTheme = localStorage.getItem("theme")!;
     // setTheme(JSON.parse(storedTheme));
   }, []);
-  
+
   const closeModal = () => {
     showModal && setShowModal(false);
     showEndModal && setShowEndModal(false);
@@ -137,9 +137,6 @@ const App = () => {
               moves={moves}
               turn={turn}
               playersNumber={playersNumber}
-              setPlayersNumber={setPlayersNumber}
-              setTheme={setTheme}
-              setGridSize={setGridSize}
               handleRestart={handleRestart}
               handleNewGame={handleNewGame}
               timerBox={

@@ -1,17 +1,12 @@
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  gridTypes,
-  playersNumberTypes,
-  themeTypes,
-} from "../@types/stateTypes";
+import { playersNumberTypes } from "../@types/stateTypes";
 import PlayerIcon from "../components/PlayerIcon";
 import { useStateContext } from "../contexts/ContextProvider";
 
 interface Props {
   board: React.ReactNode;
   playersNumber: playersNumberTypes;
-  setPlayersNumber: React.Dispatch<React.SetStateAction<playersNumberTypes>>;
   moves: number;
   turn: number;
   handleRestart: () => void;
@@ -19,16 +14,11 @@ interface Props {
   timerBox: React.ReactNode;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   pause: () => void;
-  setTheme: React.Dispatch<React.SetStateAction<themeTypes>>;
-  setGridSize: React.Dispatch<React.SetStateAction<gridTypes>>;
 }
 
 const Game = ({
-  setTheme,
-  setGridSize,
   board,
   playersNumber,
-  setPlayersNumber,
   moves,
   turn,
   handleRestart,
@@ -49,6 +39,7 @@ const Game = ({
     dispatch({
       type: "CLEAR_PLAYER_SCORES",
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -86,7 +77,6 @@ const Game = ({
 
       {playersNumber > 1 ? (
         <div className="flex-[0.15] flex justify-between items-end md:w-[35rem] md:m-auto">
-          {/* {persistedState && <p>{persistedState.playerDetails}</p>} */}
           {state.playerDetails!.map((player) => (
             <PlayerIcon
               key={player.id}

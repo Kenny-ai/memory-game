@@ -30,6 +30,7 @@ const StartBoard = ({
 
   useEffect(() => {
     handleNewGame();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGridSize = (value: gridTypes) => {

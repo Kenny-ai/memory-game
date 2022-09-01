@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import "../styles.css";
 
 interface Props {
@@ -12,7 +11,7 @@ interface Props {
 
 const PlayerIcon = ({ id, mobileName, desktopName, turn, score }: Props) => {
   return (
-    <motion.div
+    <div
       className={`${
         turn === id ? `bg-orange text-white-text` : `bg-button-inactive`
       } flex flex-col justify-center items-start w-16 p-3 rounded-lg h-fit md:w-32 player-icon`}
@@ -35,7 +34,7 @@ const PlayerIcon = ({ id, mobileName, desktopName, turn, score }: Props) => {
       >
         {score}
       </p>
-    </motion.div>
+    </div>
   );
 };
 

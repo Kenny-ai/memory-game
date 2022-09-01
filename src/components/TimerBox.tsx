@@ -12,6 +12,7 @@ interface Props {
 const TimerBox = ({ seconds, minutes, reset, displayTimer }: Props) => {
   useEffect(() => {
     reset();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
