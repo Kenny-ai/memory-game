@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles.css";
 
 interface Props {
@@ -18,6 +19,7 @@ const MenuModal = ({
     setShowModal(false);
     start();
   };
+  const navigate = useNavigate();
   return (
     <div className="relative h-screen">
       <div
@@ -33,7 +35,10 @@ const MenuModal = ({
           Restart
         </button>
         <button
-          onClick={handleNewGame}
+          onClick={() => {
+            navigate("/");
+            handleNewGame();
+          }}
           className="bg-button-inactive text-[#31495a] font-bold w-full py-2 rounded-full text-lg hover:bg-gray-hover"
         >
           New Game
