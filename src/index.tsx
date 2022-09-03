@@ -6,17 +6,20 @@ import reportWebVitals from "./reportWebVitals";
 import { ContextProvider } from "./contexts/ContextProvider";
 import reducer, { initialState } from "./reducers/reducer";
 import { BrowserRouter } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ContextProvider reducer={reducer} initialState={initialState}>
-        <App />
-      </ContextProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ContextProvider reducer={reducer} initialState={initialState}>
+          <App />
+        </ContextProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 
