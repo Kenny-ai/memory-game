@@ -86,7 +86,7 @@ const Board = ({
   // array to store ids of clicked boxes
   const [boxesPicked, setBoxesPicked] = useState<number[]>([]);
 
-  const handleBoxClick = (_id: string) => {
+  const handleBoxClick = (_id: string) => () => {
     let id = parseInt(_id); // convert id to number
 
     // prevent user click on the same box twice and prevent a third box click
@@ -184,7 +184,7 @@ const Board = ({
             key={i}
             style={{ width: `${boxWidth}rem`, height: `${boxWidth}rem` }}
             className="box"
-            onClick={() => handleBoxClick(i)}
+            onClick={handleBoxClick(i)}
           >
             <div id={i} className="inner" style={{ fontSize: font }}>
               {theme === "numbers" ? (
